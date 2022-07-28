@@ -23,17 +23,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final fruitProvider = StateProvider<String>((ref) => 'unkown');
+final FavoriteProvider = ChangeNotifierProvider((ref) => Favorites());
 
 class MyHomePage extends HookConsumerWidget {
   MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fruit = ref.watch(fruitProvider.state);
+    final favorite = ref.watch(FavoriteProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minha fruta favorita é ${fruit.state}'),
+        title: Text('Minha fruta favorita é ${favorite.fruit}'),
       ),
       body: Center(
         child: Column(
@@ -66,8 +66,17 @@ class FruitButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
         onPressed: () {
-          ref.watch(fruitProvider.state).state = fruit;
+          ref.watch(FavoriteProvider).changeFruit(fruit);
         },
         child: Text(fruit));
+  }
+}
+
+class Favorites extends ChangeNotifier {
+  String fruit = 'unknown';
+
+  void changeFruit(String newFruit) {
+    fruit = newFruit;
+    notifyListeners();
   }
 }
